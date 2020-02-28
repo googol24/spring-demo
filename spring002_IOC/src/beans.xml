@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--bean标签相当于重新new一个对象-->
+    <!--bean id="u" 等价于 bean name="u"，区别：name里面可以保护一些特殊字符-->
+    <bean name="u" class="com.googol24.spring.dao.UserDAOMySQLImpl"/>
+    <!--<bean id="u" class="com.googol24.spring.dao.UserDAOOracleImpl"/>-->
+
+    <!--动态装配类的属性（依赖注入）-->
+    <bean id="userService" class="com.googol24.spring.service.UserService">
+        <!--setters注入-->
+        <!--相当于setUserDAO(com.googol24.spring.dao.UserDAO dao)-->
+        <property name="userDAO" ref="u"/>
+
+        <!--构造方法注入-->
+        <!--<constructor-arg>-->
+            <!--<ref bean="u"/>-->
+        <!--</constructor-arg>-->
+    </bean>
+
+    <!--简单属性注入-->
+    <bean id="userDAO1" class="com.googol24.spring.dao.UserDAOMySQLImpl">
+        <property name="daoId" value="8"/>
+        <property name="daoStatus" value="good"/>
+    </bean>
+
+    <!--Bean的scope-->
+    <bean id="scopeBean1" class="com.googol24.spring.service.UserService" />
+    <bean id="scopeBean2" class="com.googol24.spring.service.UserService" scope="prototype"/>
+
+    <!--集合注入-->
+    <bean id = "collectionInjectionBean" class="com.googol24.spring.dao.UserDAOOracleImpl">
+        <property name="sets">
+            <set>
+                <value>s1</value>
+                <value>s2</value>
+                <value>s3</value>
+            </set>
+        </property>
+
+        <property name="lists">
+            <list>
+                <value>l1</value>
+                <value>l2</value>
+                <value>l3</value>
+            </list>
+        </property>
+
+        <property name="maps">
+            <map>
+                <entry key="k1" value="v1"/>
+                <entry key="k2" value="v2"/>
+            </map>
+        </property>
+
+        <property name="arrays">
+            <array>
+                <value>Apple</value>
+                <value>Book</value>
+                <value>Cap</value>
+                <value>Desk</value>
+                <value>Eraser</value>
+            </array>
+        </property>
+    </bean>
+
+    <!--自动装配Autowired-->
+    <bean id="autowired1" class="com.googol24.spring.dao.UserDAOMySQLImpl">
+        <property name="daoId" value="1"/>
+        <property name="daoStatus" value="good"/>
+    </bean>
+    <bean id="userDAO" class="com.googol24.spring.dao.UserDAOMySQLImpl">
+        <property name="daoId" value="2"/>
+        <property name="daoStatus" value="normal"/>
+    </bean>
+    <!--<bean id="userServiceAutowired" class="com.googol24.spring.service.UserService">-->
+        <!--手动指定注入属性的类型-->
+        <!--<property name="userDAO" ref="autowired1"/>-->
+    <!--</bean>-->
+    <bean id="userServiceAutowired" class="com.googol24.spring.service.UserService" autowire="byName">
+        <!--byName:按照名字自动匹配-->
+        <!--byType:按照类型自动匹配-->
+        <!--自动指定注入属性的类型-->
+    </bean>
+    <!--bean生命周期-->
+    <!--init-method:容器对bean初始化的时候执行的操作；destroy-method:容器关闭的时候执行的操作-->
+    <bean id="lifeCycleBean" class="com.googol24.spring.service.UserService" lazy-init="false" init-method="init" destroy-method="destroy"/>
+</beans>

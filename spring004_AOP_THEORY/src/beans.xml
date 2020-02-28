@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans>
+    <!--<bean id = "u" class = "com.googol24.spring.dao.UserDAOMySQLImpl"/>-->
+    <bean id="u" class="com.googol24.spring.dao.UserDAOOracleImpl"/>
+
+    <!--动态装配类的属性（依赖注入）-->
+    <bean id="userService" class="com.googol24.spring.service.UserService">
+        <property name="userDAO" bean="u"/>
+    </bean>
+</beans>

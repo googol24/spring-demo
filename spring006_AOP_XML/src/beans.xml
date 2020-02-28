@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <context:annotation-config />
+
+    <!--spring容器自动去指定的包(com.googol24.spring)寻找bean-->
+    <!--便于使用@Component注解-->
+    <context:component-scan base-package="com.googol24.spring"/>
+
+    <!--Spring AOP 使用 XML 实现-->
+
+    <!--把这个类定义为一个切面类-->
+    <bean id="logInterceptor" class="com.googol24.spring.aop.LogInterceptor"/>
+
+    <!--切面配置-->
+    <aop:config>
+        <!--定义一个PointCut，可以在aspect外面定义（各个aspect共享）或者在某个aspect里面定义（这个aspect独用）-->
+        <aop:pointcut id="logPointcut" expression="execution(public * com.googol24.spring.dao..*.*(..))"/>
+
+        <!--定义一个切面，引用自上面配置的切面类的bean-->
+        <aop:aspect ref="logInterceptor">
+            <aop:before method="before" pointcut-ref="logPointcut"/>
+            <aop:after method="after" pointcut-ref="logPointcut"/>
+            <!--<aop:after-returning method="afterReturning" pointcut-ref="logPointcut"/>-->
+            <aop:after-returning method="afterReturning" pointcut="execution(public * com.googol24.spring.dao..*.*(..))"/>
+            <aop:around method="around" pointcut-ref="logPointcut"/>
+        </aop:aspect>
+    </aop:config>
+</beans>
